@@ -163,9 +163,20 @@
                                 </button>
                             </form>
                         @else
-                            <form action="{{ route('payroll.pending', $slip) }}" method="POST" onsubmit="return confirm('Kembalikan status ke PENDING?')">
+                            <form action="{{ route('payroll.pending', $slip) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="px-2.5 min-h-[38px] py-1.5 text-[11px] rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 transition flex items-center justify-center">
+                                <button type="button" 
+                                        @click="$dispatch('open-confirm-modal', {
+                                            title: 'Batalkan Status Bayar? 🐾',
+                                            message: 'Status gaji {{ addslashes($slip->employee->name) }} akan dikembalikan ke PENDING dan catatan pengeluaran kas otomatis disesuaikan.',
+                                            confirmText: 'Ya, Kembalikan Status ↩️',
+                                            cancelText: 'Batal',
+                                            badgeText: 'STATUS GAJI',
+                                            mood: 'worried',
+                                            targetForm: $el.closest('form')
+                                        })"
+                                        aria-label="Batalkan status bayar gaji {{ $slip->employee->name }}"
+                                        class="px-2.5 min-h-[38px] py-1.5 text-[11px] rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 transition flex items-center justify-center">
                                     Batal
                                 </button>
                             </form>
@@ -261,9 +272,20 @@
                                             </button>
                                         </form>
                                     @else
-                                        <form action="{{ route('payroll.pending', $slip) }}" method="POST" onsubmit="return confirm('Kembalikan status ke PENDING?')">
+                                        <form action="{{ route('payroll.pending', $slip) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="px-2.5 py-1 text-[11px] rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition">
+                                            <button type="button" 
+                                                    @click="$dispatch('open-confirm-modal', {
+                                                        title: 'Batalkan Status Bayar? 🐾',
+                                                        message: 'Status gaji {{ addslashes($slip->employee->name) }} akan dikembalikan ke PENDING dan catatan pengeluaran kas otomatis disesuaikan.',
+                                                        confirmText: 'Ya, Kembalikan Status ↩️',
+                                                        cancelText: 'Batal',
+                                                        badgeText: 'STATUS GAJI',
+                                                        mood: 'worried',
+                                                        targetForm: $el.closest('form')
+                                                    })"
+                                                    aria-label="Batalkan status bayar gaji {{ $slip->employee->name }}"
+                                                    class="px-2.5 py-1 text-[11px] rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition">
                                                 Batalkan
                                             </button>
                                         </form>

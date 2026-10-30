@@ -91,6 +91,9 @@
     <!-- Dynamic Pop-Up Notification Modal (Create / Update / Delete) -->
     <x-notification-modal />
 
+    <!-- Pastel Cat Mascot Confirmation Modal (Delete / Action Confirmation) -->
+    <x-confirm-modal />
+
     <!-- Main Content Area with Bottom Padding for Mobile & Tablet Tab Bar -->
     <main id="main-content" class="page-content flex-1 max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 w-full pb-24 lg:pb-8">
         {{ $slot ?? '' }}

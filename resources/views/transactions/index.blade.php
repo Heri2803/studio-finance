@@ -150,10 +150,19 @@
 
                         <!-- Delete Button if not payroll locked -->
                         @if(!$tx->payroll_slip_id)
-                            <form action="{{ route('transactions.destroy', $tx) }}" method="POST" onsubmit="return confirm('Hapus transaksi ini?')">
+                            <form action="{{ route('transactions.destroy', $tx) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
+                                <button type="button" 
+                                        @click="$dispatch('open-confirm-modal', {
+                                            title: 'Hapus Transaksi Kas? 🥺🐾',
+                                            message: 'Yakin ingin menghapus catatan “{{ addslashes($tx->description) }}” senilai Rp {{ number_format($tx->amount, 0, \',\', \'.\') }}?',
+                                            confirmText: 'Ya, Hapus! 🗑️',
+                                            cancelText: 'Batal',
+                                            badgeText: 'HAPUS KAS',
+                                            mood: 'delete',
+                                            targetForm: $el.closest('form')
+                                        })"
                                         aria-label="Hapus transaksi {{ $tx->description }}"
                                         class="w-8 h-8 flex items-center justify-center text-xs rounded-lg text-taby-muted hover:text-rose-600 hover:bg-rose-50 transition">
                                     🗑️
@@ -228,10 +237,21 @@
                             </td>
                             <td class="py-3.5 px-4 text-right">
                                 @if(!$tx->payroll_slip_id)
-                                    <form action="{{ route('transactions.destroy', $tx) }}" method="POST" onsubmit="return confirm('Hapus catatan transaksi ini?')">
+                                    <form action="{{ route('transactions.destroy', $tx) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="px-2 py-1 text-xs rounded-lg bg-gray-100 hover:bg-taby-rose text-gray-500 hover:text-taby-rose-dark transition">
+                                        <button type="button" 
+                                                @click="$dispatch('open-confirm-modal', {
+                                                    title: 'Hapus Transaksi Kas? 🥺🐾',
+                                                    message: 'Yakin ingin menghapus catatan “{{ addslashes($tx->description) }}” senilai Rp {{ number_format($tx->amount, 0, \',\', \'.\') }}?',
+                                                    confirmText: 'Ya, Hapus! 🗑️',
+                                                    cancelText: 'Batal',
+                                                    badgeText: 'HAPUS KAS',
+                                                    mood: 'delete',
+                                                    targetForm: $el.closest('form')
+                                                })"
+                                                aria-label="Hapus transaksi {{ $tx->description }}"
+                                                class="px-2 py-1 text-xs rounded-lg bg-gray-100 hover:bg-taby-rose text-gray-500 hover:text-taby-rose-dark transition">
                                             🗑️
                                         </button>
                                     </form>

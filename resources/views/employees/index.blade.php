@@ -78,10 +78,19 @@
                                 class="px-3 min-h-[36px] text-xs font-bold rounded-xl bg-taby-lilac hover:bg-taby-lilac-border text-taby-charcoal border border-taby-lilac-border transition shadow-sm flex items-center justify-center">
                                 ✏️ Edit
                             </button>
-                            <form action="{{ route('employees.destroy', $emp) }}" method="POST" onsubmit="return confirm('Hapus pekerja {{ $emp->name }}?')">
+                            <form action="{{ route('employees.destroy', $emp) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
+                                <button type="button" 
+                                        @click="$dispatch('open-confirm-modal', {
+                                            title: 'Hapus Pekerja Ini? 🥺🐾',
+                                            message: 'Apakah Kak Chansa yakin ingin menghapus data {{ addslashes($emp->name) }} ({{ addslashes($emp->role) }})?',
+                                            confirmText: 'Ya, Hapus! 🗑️',
+                                            cancelText: 'Batal',
+                                            badgeText: 'HAPUS PEKERJA',
+                                            mood: 'delete',
+                                            targetForm: $el.closest('form')
+                                        })"
                                         aria-label="Hapus data pekerja {{ $emp->name }}"
                                         class="w-9 h-9 text-xs rounded-xl bg-taby-rose hover:bg-taby-rose-border text-taby-rose-dark border border-taby-rose-border transition shadow-sm flex items-center justify-center">
                                     🗑️
@@ -160,10 +169,21 @@
                                         class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-taby-lilac hover:bg-taby-lilac-border transition text-taby-charcoal">
                                         ✏️ Edit
                                     </button>
-                                    <form action="{{ route('employees.destroy', $emp) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pekerja ini?')">
+                                    <form action="{{ route('employees.destroy', $emp) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-taby-rose hover:bg-taby-rose-border transition text-taby-rose-dark">
+                                        <button type="button" 
+                                                @click="$dispatch('open-confirm-modal', {
+                                                    title: 'Hapus Pekerja Ini? 🥺🐾',
+                                                    message: 'Apakah Kak Chansa yakin ingin menghapus data {{ addslashes($emp->name) }} ({{ addslashes($emp->role) }})?',
+                                                    confirmText: 'Ya, Hapus! 🗑️',
+                                                    cancelText: 'Batal',
+                                                    badgeText: 'HAPUS PEKERJA',
+                                                    mood: 'delete',
+                                                    targetForm: $el.closest('form')
+                                                })"
+                                                aria-label="Hapus data pekerja {{ $emp->name }}"
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-taby-rose hover:bg-taby-rose-border transition text-taby-rose-dark">
                                             🗑️
                                         </button>
                                     </form>
