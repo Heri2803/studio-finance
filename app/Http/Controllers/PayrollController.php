@@ -24,7 +24,22 @@ class PayrollController extends Controller
 
     public function index(Request $request)
     {
-        $period = $request->get('period', Carbon::now()->translatedFormat('F Y')); // e.g. "Oktober 2026"
+        $month = $request->get('month'); // e.g. "2026-10"
+        if ($month) {
+            try {
+                $period = Carbon::parse($month . '-01')->translatedFormat('F Y');
+            } catch (\Exception $e) {
+                $period = Carbon::now()->translatedFormat('F Y');
+                $month = Carbon::now()->format('Y-m');
+            }
+        } else {
+            $period = $request->get('period', Carbon::now()->translatedFormat('F Y'));
+            try {
+                $month = Carbon::parse($period)->format('Y-m');
+            } catch (\Exception $e) {
+                $month = Carbon::now()->format('Y-m');
+            }
+        }
 
         $slips = PayrollSlip::with('employee')
             ->where('period', $period)
@@ -50,12 +65,27 @@ class PayrollController extends Controller
 
         $catMood = $this->catMoodService->determinePayrollMood($slips, $netCashflow, $activeEmployeesWithoutSlip);
 
-        return view('payroll.index', compact('slips', 'stats', 'period', 'activeEmployeesWithoutSlip', 'catMood'));
+        return view('payroll.index', compact('slips', 'stats', 'period', 'month', 'activeEmployeesWithoutSlip', 'catMood'));
     }
 
     public function generateDrafts(Request $request)
     {
-        $period = $request->input('period', Carbon::now()->translatedFormat('F Y'));
+        $month = $request->input('month');
+        if ($month) {
+            try {
+                $period = Carbon::parse($month . '-01')->translatedFormat('F Y');
+            } catch (\Exception $e) {
+                $period = Carbon::now()->translatedFormat('F Y');
+            }
+        } else {
+            $period = $request->input('period', Carbon::now()->translatedFormat('F Y'));
+            try {
+                $month = Carbon::parse($period)->format('Y-m');
+            } catch (\Exception $e) {
+                $month = Carbon::now()->format('Y-m');
+            }
+        }
+
         $employees = Employee::where('is_active', true)->get();
 
         $createdCount = 0;
@@ -89,7 +119,7 @@ class PayrollController extends Controller
             }
         }
 
-        return redirect()->route('payroll.index', ['period' => $period])
+        return redirect()->route('payroll.index', ['month' => $month])
             ->with('success', "Draft payroll berhasil dibuat untuk {$createdCount} pekerja! 🐾")
             ->with('action', 'create');
     }

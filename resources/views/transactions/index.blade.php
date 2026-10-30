@@ -77,21 +77,54 @@
                 </a>
             </div>
 
-            <!-- Month & Location Picker (Never overflows on mobile!) -->
-            <form method="GET" action="{{ route('transactions.index') }}" class="flex flex-wrap sm:flex-nowrap items-center gap-1.5 w-full md:w-auto">
+            <!-- Month, Date & Location Picker (Never overflows on mobile!) -->
+            <form method="GET" action="{{ route('transactions.index') }}" x-data="{ filterMode: '{{ $date ? 'date' : 'month' }}' }" class="flex flex-wrap sm:flex-nowrap items-center gap-1.5 w-full md:w-auto">
                 @if($type)
                     <input type="hidden" name="type" value="{{ $type }}">
                 @endif
-                <input type="month" name="month" value="{{ $month }}" aria-label="Pilih Bulan Transaksi" class="flex-1 sm:flex-none min-w-[120px] rounded-xl border-taby-border text-xs px-2.5 py-1.5 bg-cream-100 font-bold min-h-[36px]">
-                <select name="location" aria-label="Pilih Lokasi Transaksi" class="flex-1 sm:flex-none min-w-[110px] rounded-xl border-taby-border text-xs px-2 py-1.5 bg-cream-100 font-bold min-h-[36px]">
+
+                <!-- Switcher Mode: Bulan vs Tanggal -->
+                <div class="flex items-center rounded-xl bg-cream-200 p-0.5 border border-taby-border shrink-0">
+                    <button type="button" 
+                            @click="filterMode = 'month'" 
+                            :class="filterMode === 'month' ? 'bg-white font-bold text-taby-charcoal shadow-sm' : 'text-taby-muted font-medium'" 
+                            class="px-2 py-1 text-[10px] rounded-lg transition">
+                        🗓️ Bulan
+                    </button>
+                    <button type="button" 
+                            @click="filterMode = 'date'" 
+                            :class="filterMode === 'date' ? 'bg-white font-bold text-taby-charcoal shadow-sm' : 'text-taby-muted font-medium'" 
+                            class="px-2 py-1 text-[10px] rounded-lg transition">
+                        📅 Tanggal
+                    </button>
+                </div>
+
+                <!-- Input Picker Bulan -->
+                <template x-if="filterMode === 'month'">
+                    <input type="month" 
+                           name="month" 
+                           value="{{ $month }}" 
+                           aria-label="Pilih Bulan Transaksi" 
+                           onchange="this.form.submit()" 
+                           class="flex-1 sm:flex-none min-w-[125px] rounded-xl border-taby-border text-xs px-2.5 py-1.5 bg-white font-bold text-taby-charcoal min-h-[36px] cursor-pointer shadow-sm">
+                </template>
+
+                <!-- Input Picker Tanggal Spesifik -->
+                <template x-if="filterMode === 'date'">
+                    <input type="date" 
+                           name="date" 
+                           value="{{ $date ?? date('Y-m-d') }}" 
+                           aria-label="Pilih Tanggal Spesifik Transaksi" 
+                           onchange="this.form.submit()" 
+                           class="flex-1 sm:flex-none min-w-[130px] rounded-xl border-taby-border text-xs px-2.5 py-1.5 bg-white font-bold text-taby-charcoal min-h-[36px] cursor-pointer shadow-sm">
+                </template>
+
+                <select name="location" aria-label="Pilih Lokasi Transaksi" onchange="this.form.submit()" class="flex-1 sm:flex-none min-w-[105px] rounded-xl border-taby-border text-xs px-2 py-1.5 bg-white font-bold min-h-[36px] shadow-sm">
                     <option value="">Semua Lokasi</option>
                     <option value="KEMANG" {{ $location === 'KEMANG' ? 'selected' : '' }}>Kemang</option>
                     <option value="SURABAYA" {{ $location === 'SURABAYA' ? 'selected' : '' }}>Surabaya</option>
                     <option value="ONLINE" {{ $location === 'ONLINE' ? 'selected' : '' }}>Online</option>
                 </select>
-                <button type="submit" class="px-3.5 py-1.5 min-h-[36px] rounded-xl bg-taby-lilac border border-taby-lilac-border text-xs font-bold shadow-pastel flex items-center justify-center">
-                    Cari
-                </button>
             </form>
         </div>
 

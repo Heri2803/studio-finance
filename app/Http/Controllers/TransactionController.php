@@ -20,11 +20,19 @@ class TransactionController extends Controller
     {
         $type = $request->get('type');
         $location = $request->get('location');
-        $month = $request->get('month', Carbon::now()->format('Y-m'));
+        $date = $request->get('date');
+        $month = $request->get('month');
+
+        // Default to current month if neither date nor month is passed
+        if (!$date && !$month) {
+            $month = Carbon::now()->format('Y-m');
+        }
 
         $query = Transaction::query()->with('payrollSlip.employee');
 
-        if ($month) {
+        if ($date) {
+            $query->whereDate('transaction_date', $date);
+        } elseif ($month) {
             $query->whereYear('transaction_date', substr($month, 0, 4))
                   ->whereMonth('transaction_date', substr($month, 5, 2));
         }
@@ -41,14 +49,18 @@ class TransactionController extends Controller
                               ->orderBy('id', 'desc')
                               ->get();
 
-        // Summary calculations (Aggregated single-query untuk kecepatan TTFB)
-        $monthSums = Transaction::whereYear('transaction_date', substr($month, 0, 4))
-            ->whereMonth('transaction_date', substr($month, 5, 2))
-            ->selectRaw("
-                COALESCE(SUM(CASE WHEN type = 'INCOME' THEN amount ELSE 0 END), 0) as total_inflow,
-                COALESCE(SUM(CASE WHEN type = 'EXPENSE' THEN amount ELSE 0 END), 0) as total_outflow
-            ")
-            ->first();
+        // Summary calculations
+        if ($date) {
+            $sums = Transaction::whereDate('transaction_date', $date);
+        } else {
+            $sums = Transaction::whereYear('transaction_date', substr($month, 0, 4))
+                ->whereMonth('transaction_date', substr($month, 5, 2));
+        }
+
+        $monthSums = $sums->selectRaw("
+            COALESCE(SUM(CASE WHEN type = 'INCOME' THEN amount ELSE 0 END), 0) as total_inflow,
+            COALESCE(SUM(CASE WHEN type = 'EXPENSE' THEN amount ELSE 0 END), 0) as total_outflow
+        ")->first();
 
         $totalInflow = (float) ($monthSums->total_inflow ?? 0);
         $totalOutflow = (float) ($monthSums->total_outflow ?? 0);
@@ -59,11 +71,13 @@ class TransactionController extends Controller
             'total_outflow' => $totalOutflow,
             'net_cashflow' => $netCashflow,
             'month' => $month,
+            'date' => $date,
         ];
 
+        $filterLabel = $date ? Carbon::parse($date)->translatedFormat('d F Y') : Carbon::parse($month . '-01')->translatedFormat('F Y');
         $catMood = $this->catMoodService->determineTransactionMood($stats, $transactions->count());
 
-        return view('transactions.index', compact('transactions', 'stats', 'type', 'location', 'month', 'catMood'));
+        return view('transactions.index', compact('transactions', 'stats', 'type', 'location', 'month', 'date', 'filterLabel', 'catMood'));
     }
 
     public function store(Request $request)

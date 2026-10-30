@@ -13,16 +13,23 @@
         </div>
 
         <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <!-- Native Month Picker (Auto-submits on change!) -->
             <form method="GET" action="{{ route('payroll.index') }}" class="flex items-center gap-1.5">
-                <input type="text" name="period" value="{{ $period }}" placeholder="Bulan Tahun" aria-label="Filter Periode Gaji" class="rounded-xl border-taby-border text-xs px-2.5 py-1.5 w-28 min-[380px]:w-36 sm:w-40 bg-white font-bold text-taby-charcoal shadow-sm">
-                <button type="submit" class="px-3 py-1.5 min-h-[36px] rounded-xl bg-taby-lilac border border-taby-lilac-border text-xs font-bold shadow-pastel">
-                    Pilih
-                </button>
+                <div class="relative">
+                    <input type="month" 
+                           name="month" 
+                           value="{{ $month }}" 
+                           aria-label="Pilih Bulan Periode Gaji" 
+                           onchange="this.form.submit()" 
+                           class="rounded-xl border-taby-border text-xs px-2.5 py-1.5 bg-white font-bold text-taby-charcoal shadow-sm cursor-pointer pr-7 min-w-[130px] sm:min-w-[145px] min-h-[36px]">
+                    <span class="absolute right-2 top-2.5 pointer-events-none text-xs text-taby-muted">▾</span>
+                </div>
             </form>
 
             @if($activeEmployeesWithoutSlip > 0)
                 <form method="POST" action="{{ route('payroll.generate') }}">
                     @csrf
+                    <input type="hidden" name="month" value="{{ $month }}">
                     <input type="hidden" name="period" value="{{ $period }}">
                     <button type="submit" class="px-3 py-1.5 min-h-[36px] sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-taby-yellow border-2 border-taby-yellow-border font-bold text-xs text-taby-charcoal shadow-pastel hover:translate-y-[-1px] transition flex items-center gap-1 shrink-0">
                         <span>✨</span> Draft ({{ $activeEmployeesWithoutSlip }})
