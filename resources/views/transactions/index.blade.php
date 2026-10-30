@@ -156,7 +156,7 @@
                                 <button type="button" 
                                         @click="$dispatch('open-confirm-modal', {
                                             title: 'Hapus Transaksi Kas? 🥺🐾',
-                                            message: 'Yakin ingin menghapus catatan “{{ addslashes($tx->description) }}” senilai Rp {{ number_format($tx->amount, 0, \',\', \'.\') }}?',
+                                            message: 'Yakin ingin menghapus catatan “{{ addslashes($tx->description) }}” senilai Rp {{ number_format($tx->amount, 0, ",", ".") }}?',
                                             confirmText: 'Ya, Hapus! 🗑️',
                                             cancelText: 'Batal',
                                             badgeText: 'HAPUS KAS',
@@ -243,7 +243,7 @@
                                         <button type="button" 
                                                 @click="$dispatch('open-confirm-modal', {
                                                     title: 'Hapus Transaksi Kas? 🥺🐾',
-                                                    message: 'Yakin ingin menghapus catatan “{{ addslashes($tx->description) }}” senilai Rp {{ number_format($tx->amount, 0, \',\', \'.\') }}?',
+                                                    message: 'Yakin ingin menghapus catatan “{{ addslashes($tx->description) }}” senilai Rp {{ number_format($tx->amount, 0, ",", ".") }}?',
                                                     confirmText: 'Ya, Hapus! 🗑️',
                                                     cancelText: 'Batal',
                                                     badgeText: 'HAPUS KAS',
