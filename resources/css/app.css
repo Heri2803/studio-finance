@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Prevent Alpine.js Flash of Unstyled Content (FOUC / CLS) */
+  [x-cloak] {
+    display: none !important;
+  }
+
+  body {
+    @apply bg-cream-100 text-taby-charcoal font-sans antialiased;
+    background-image: 
+      linear-gradient(to right, #EFE8DA 1px, transparent 1px),
+      linear-gradient(to bottom, #EFE8DA 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ======================================================== */
+  /* SMOOTH PAGE TRANSITIONS (SPA-LIKE NATIVE APP FEEL)       */
+  /* ======================================================== */
+  @keyframes pageCascadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(26px) scale(0.98);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .anim-enter {
+    animation: pageCascadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: transform, opacity;
+  }
+
+  .anim-delay-1 {
+    animation-delay: 0.08s;
+  }
+
+  .anim-delay-2 {
+    animation-delay: 0.16s;
+  }
+
+  .anim-delay-3 {
+    animation-delay: 0.24s;
+  }
+
+  /* ======================================================== */
+  /* CAT MASCOT ANIMATIONS (CONTINUOUS LIFE + SPRING BOUNCE)   */
+  /* ======================================================== */
+  
+  /* 1. Grand Bouncy Entrance Pop on Page Load */
+  @keyframes catSpringEntrance {
+    0% {
+      opacity: 0;
+      transform: translateY(40px) scale(0.35) rotate(-18deg);
+    }
+    40% {
+      opacity: 1;
+      transform: translateY(-20px) scale(1.28) rotate(10deg);
+    }
+    65% {
+      transform: translateY(6px) scale(0.9) rotate(-4deg);
+    }
+    82% {
+      transform: translateY(-4px) scale(1.06) rotate(2deg);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(0deg);
+    }
+  }
+
+  .animate-cat-bounce {
+    animation: catSpringEntrance 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+    transform-origin: center bottom;
+    will-change: transform, opacity;
+  }
+
+  /* 2. Continuous Lively Breathing & Floating Rhythm */
+  @keyframes catLivelyFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-8px) rotate(-2.5deg);
+    }
+    50% {
+      transform: translateY(-2px) rotate(0deg);
+    }
+    75% {
+      transform: translateY(-10px) rotate(2.5deg);
+    }
+  }
+
+  .animate-cat-float {
+    animation: catLivelyFloat 2.8s ease-in-out infinite;
+    transform-origin: center bottom;
+    will-change: transform;
+  }
+
+  /* 3. Cute Periodic Ear Twitches */
+  @keyframes earTwitchLeft {
+    0%, 88%, 100% { transform: rotate(0deg); }
+    91% { transform: rotate(-9deg); }
+    94% { transform: rotate(4deg); }
+    97% { transform: rotate(-5deg); }
+  }
+
+  @keyframes earTwitchRight {
+    0%, 88%, 100% { transform: rotate(0deg); }
+    91% { transform: rotate(9deg); }
+    94% { transform: rotate(-4deg); }
+    97% { transform: rotate(5deg); }
+  }
+
+  .cat-ear-left {
+    animation: earTwitchLeft 3.6s infinite ease-in-out;
+    transform-origin: 26px 40px;
+  }
+
+  .cat-ear-right {
+    animation: earTwitchRight 3.6s infinite ease-in-out;
+    transform-origin: 94px 40px;
+  }
+
+  /* 4. Natural Eye Blinking */
+  @keyframes catEyeBlink {
+    0%, 88%, 100% { transform: scaleY(1); }
+    93%, 95% { transform: scaleY(0.12); }
+  }
+
+  .cat-eyes-blink {
+    animation: catEyeBlink 3.4s infinite ease-in-out;
+    transform-origin: 60px 56px;
+  }
+
+  /* 5. Staggered Speech Bubble Pop & Slide In */
+  @keyframes bubbleSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(-22px) scale(0.92);
+    }
+    60% {
+      opacity: 1;
+      transform: translateX(4px) scale(1.03);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  .animate-bubble-slide {
+    animation: bubbleSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both !important;
+    transform-origin: left center;
+    will-change: transform, opacity;
+  }
+
+  /* 6. Interactive Click/Tap Squish Bounce */
+  .cat-clickable {
+    cursor: pointer;
+    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .cat-clickable:active {
+    transform: scale(0.82) rotate(-8deg) !important;
+  }
+  .cat-clickable:hover {
+    transform: scale(1.08) rotate(3deg);
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Safe Area Utilities for Mobile iOS/Android */
+  .pb-safe {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
