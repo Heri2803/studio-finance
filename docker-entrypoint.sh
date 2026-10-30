@@ -6,6 +6,12 @@ PORT=${PORT:-80}
 sed -i "s/Listen 80/Listen $PORT/g" /etc/apache2/ports.conf
 sed -i "s/:80/:$PORT/g" /etc/apache2/sites-available/000-default.conf
 
+# Ensure .env file exists from .env.example
+if [ ! -f /var/www/html/.env ]; then
+    echo "Creating .env from .env.example..."
+    cp /var/www/html/.env.example /var/www/html/.env
+fi
+
 # Setup SQLite if MySQL credentials are not provided
 if [ -z "$DB_HOST" ] || [ "$DB_CONNECTION" = "sqlite" ]; then
     echo "Configuring SQLite database..."
@@ -14,10 +20,14 @@ if [ -z "$DB_HOST" ] || [ "$DB_CONNECTION" = "sqlite" ]; then
     touch /var/www/html/database/database.sqlite
     chown www-data:www-data /var/www/html/database/database.sqlite
     chmod 664 /var/www/html/database/database.sqlite
+
+    # Update .env to reflect sqlite
+    sed -i "s/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/g" /var/www/html/.env
+    sed -i "s/DB_HOST=127.0.0.1/#DB_HOST=127.0.0.1/g" /var/www/html/.env
 fi
 
 # Generate APP_KEY if missing
-if [ -z "$APP_KEY" ]; then
+if ! grep -q "APP_KEY=base64:" /var/www/html/.env && [ -z "$APP_KEY" ]; then
     echo "Generating Application Key..."
     php artisan key:generate --force
 fi
