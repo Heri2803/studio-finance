@@ -18,8 +18,9 @@ if [ -z "$DB_HOST" ] || [ "$DB_CONNECTION" = "sqlite" ]; then
     export DB_CONNECTION=sqlite
     export DB_DATABASE=/var/www/html/database/database.sqlite
     touch /var/www/html/database/database.sqlite
-    chown www-data:www-data /var/www/html/database/database.sqlite
-    chmod 664 /var/www/html/database/database.sqlite
+    chown -R www-data:www-data /var/www/html/database
+    chmod -R 775 /var/www/html/database
+    chmod 666 /var/www/html/database/database.sqlite
 
     # Update .env to reflect sqlite
     sed -i "s/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/g" /var/www/html/.env
@@ -49,6 +50,11 @@ php artisan view:clear
 echo "Running migrations and seeders..."
 php artisan migrate --force
 php artisan db:seed --force
+
+# Crucial: Ensure web server (www-data) owns database directory & sqlite file for CRUD writes
+chown -R www-data:www-data /var/www/html/database
+chmod -R 775 /var/www/html/database
+chmod 666 /var/www/html/database/database.sqlite
 
 echo "StudioFinance is ready! Starting Apache on port $PORT..."
 exec apache2-foreground
